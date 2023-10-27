@@ -12,12 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.Toast;
 
 
-
+import java.util.ArrayList;
 
 import javier.gonzalez.ejercicioinmobiliaria.databinding.ActivityMainBinding;
-
+import javier.gonzalez.ejercicioinmobiliaria.modelos.Inmueble;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private ActivityResultLauncher<Intent> launcherAddInmueble;
+    private ArrayList<Inmueble> listaInmuebles;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        listaInmuebles= new ArrayList<>();
         incializarLaunchers();
 
 
@@ -52,7 +55,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult o) {
                         //Resultado de volver a la actividad inmueble
-
+                        if(o.getResultCode()==RESULT_OK){
+                            if(o.getData()!=null && o.getData().getExtras()!=null){
+                                Inmueble inmueble =(Inmueble) o.getData().getExtras().getSerializable("Inmueble");
+                                listaInmuebles.add(inmueble);
+                                Toast.makeText(MainActivity.this, inmueble.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(MainActivity.this, "Accion cancelada", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
         );
